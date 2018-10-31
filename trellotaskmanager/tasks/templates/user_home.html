@@ -16,12 +16,12 @@
         <div class="content">
             Members: [[ team.members ]]
         </div>
-        <button class="button is-info is-small" type="submit">Edit</button>
-        <button class="button is-danger is-small" 
+        <button class="button is-danger is-small"
            @click="removeTeam(team.id)">Delete</button>
       </div>
     </div>
   </div>
+
   </div>
 </div>
 </section>
@@ -33,14 +33,14 @@
   delimiters: ['[[', ']]'],
   data () {
     return {
-      teams: null
+      teams: []
     }
   },
   methods: {
     removeTeam(id) {
       console.log(id)
       axios
-      .delete('https://4803.dev.idg.com.au/trello/team/'+id)
+      .delete('http://localhost:8000/trello/team/'+id)
       .then(response => {
         this.teams = response.data
         console.log(response.data)
@@ -49,19 +49,20 @@
       .catch(function(error) {
         console.log(error);
       });
+    },
+    addTeam(name, members) {
 
-      
     }
   },
   mounted () {
     axios
-      .get('https://4803.dev.idg.com.au/trello/teams/')
+      .get('http://localhost:8000/trello/user/teams/')
       .then(response => {
         this.teams = response.data
         console.log(response.data)
         }
-        ) 
-      
+        )
+
   }
   })
 

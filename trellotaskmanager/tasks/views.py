@@ -19,13 +19,14 @@ from .models import Team, Board, List, Card
 from profiles.models import Profile
 from profiles.forms import SignUpForm
 
-
+# This permission class is for checking whether the user is authenticated
 class IsAuthenticatedUser(IsAuthenticated):
     def has_permission(self, request, view):
         if not request.user.is_authenticated():
             return False
         return True
 
+# This permission class is to check whether the user is a member of Team
 class IsAuthorizedTeamMember(IsAuthenticated):
     def has_permission(self, request, view):
         if request.method == 'GET':
@@ -44,7 +45,6 @@ class IsAuthorizedTeamMember(IsAuthenticated):
 
 # To remove the csrf enforcement
 class CsrfExemptSessionAuthentication(SessionAuthentication):
-    
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
@@ -107,9 +107,13 @@ class RegistrationView(View):
             #return render(request, 'user_home.html', c)
         return render(request, 'user_register.html', c)
 
-
-#This will only return the teams which the user logged in is member of because of Permission Classes
+# Returns all the teams
 class TeamList(generics.ListCreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+
+#This will only return the teams which the user is member of because of Permission Classes
+class UserTeamList(generics.ListCreateAPIView):
     def get_queryset(self):
         # Only the teams which the user is member of should be displayed on the home page
         user = self.request.user
@@ -125,6 +129,7 @@ class TeamList(generics.ListCreateAPIView):
     serializer_class = TeamSerializer
     permission_classes = (IsAuthenticatedUser,)
 
+# Returns the details of a Team
 class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -133,26 +138,69 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     # This below code is to exempt csrf token
     authentication_classes = (CsrfExemptSessionAuthentication, )
 
+# Returns all the boards
 class BoardList(generics.ListCreateAPIView):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
+# This view is to fetch the boards of a particular team, Input is the Team ID
+# Return all the boards of a team
+class TeamBoardsList(generics.ListAPIView):
+    def get_queryset(self):
+        try:
+            team_id = int(self.request.path.split('/')[-2])
+            team = Team.objects.get(id=team_id)
+            return Board.objects.filter(team=team)
+        except:
+            return Board.objects.all()
+
+    serializer_class = BoardSerializer
+
+# Returns details of a board
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
+# Returns all the lists
 class ListList(generics.ListCreateAPIView):
     queryset = List.objects.all()
     serializer_class = ListSerializer
 
+# This is the view to list all the lists of a Board, Input is the Board ID
+# Returns all the lists of a Board
+class ListBoardLists(generics.ListAPIView):
+    def get_queryset(self):
+        try:
+            board_id = int(self.request.path.split('/')[-2])
+            board = Board.objects.get(id=board_id)
+            return List.objects.filter(board=board)
+        except:
+            return List.objects.all()
+    serializer_class = ListSerializer
+
+# Returns the detail of a List
 class ListDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = List.objects.all()
     serializer_class = ListSerializer
 
+# Returns all the cards
 class CardList(generics.ListCreateAPIView):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
+# This is the view to list all the cards of a List, Input is the List ID
+# Returns all the cards of a List
+class ListCardLists(generics.ListAPIView):
+    def get_queryset(self):
+        try:
+            list_id = int(self.request.path.split('/')[-2])
+            list = List.objects.get(id=list_id)
+            return Card.objects.filter(list=list)
+        except:
+            return Card.objects.all()
+    serializer_class = CardSerializer
+
+# Returns the detail of a Card
 class CardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Card.objects.all()
     serializer_class = CardSerializer

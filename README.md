@@ -3,7 +3,7 @@
 This app is to provide the restful services for Task management system similar to Trello.
 User should be able to perform the following tasks for which there are API's written:
 
-#Setup
+# Setup
 
 1. Git clone the repository.
 2. Delete the venv folder and install your own virtual environment using pip install virtualenv > virtualenv venv
@@ -14,7 +14,7 @@ User should be able to perform the following tasks for which there are API's wri
 6. Now you will be able to access the API endpoint URL's
 
 
-#API's that can be used:
+# API's that can be used:
 
 We are assuming that you are running the application on default 8000 port
 
@@ -34,14 +34,14 @@ List/Create Cards: http://localhost:8000/trello/cards/
 List all the cards specific to a List: http://localhost:8000/trello/cards/list/1 (List ID should be passed in URL)
 List/Edit/Delete Specific Card: http://localhost:8000/trello/card/1/
 
-#Current Features:
+# Current Features:
 
 1. User Signup Implemented.
 2. User login implemented.
 3. User home screen dashboard displays all the teams he belongs to (List User Specific Teams)
 4. User can delete the team.
 
-#Technologies:
+# Technologies:
 
 Django 1.11.16
 Django Rest Framework

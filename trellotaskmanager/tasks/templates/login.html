@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero is-fullheight">
+      <div class="hero-body">
+          <div class="container has-text-centered">
+              <div class="column is-4 is-offset-4">
+                  {% if form.errors %}
+                    <p class="subtitle has-text-red">Sorry. that's not a valid username or password</p>
+                  {% endif %}
+                  <p class="subtitle has-text-grey">Please login to proceed.</p>
+                  <div class="box">
+                      <form action="{% url 'login-home' %}" method="post" accept-charset="UTF-8">
+                        {% csrf_token %}
+                          <div class="field">
+                              <div class="control">
+                                  <input class="input is-large" type="email" name="username" value="" placeholder="Your Email">
+                              </div>
+                          </div>
+                          <div class="field">
+                              <div class="control">
+                                  <input class="input is-large" type="password" name="password" value="" placeholder="Your Password">
+                              </div>
+                          </div>
+                          <button class="button is-block is-info is-large is-fullwidth" type="submit">Login</button>
+                      </form>
+                  </div>
+                  <p class="has-text-grey">
+                      <a href="{% url 'user-registration' %}">Sign Up</a> &nbsp;·&nbsp;
+                  </p>
+              </div>
+          </div>
+      </div>
+  </section>
+
+{% endblock content %}

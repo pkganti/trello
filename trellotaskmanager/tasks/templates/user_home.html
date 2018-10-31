@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section>
+  <div id="app">
+  <div class="row columns">
+  <div v-for="(team, index) of teams" v-bind:key="index" :id="team.id" class="column is-one-fourth">
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+            <div class="media-content">
+                <p class="title is-4">[[ team.name ]]</p>
+            </div>
+        </div>
+        <div class="content">
+            Members: [[ team.members ]]
+        </div>
+        <button class="button is-info is-small" type="submit">Edit</button>
+        <button class="button is-danger is-small" 
+           @click="removeTeam(team.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+</section>
+
+<script>
+
+  new Vue({
+  el: '#app',
+  delimiters: ['[[', ']]'],
+  data () {
+    return {
+      teams: null
+    }
+  },
+  methods: {
+    removeTeam(id) {
+      console.log(id)
+      axios
+      .delete('https://4803.dev.idg.com.au/trello/team/'+id)
+      .then(response => {
+        this.teams = response.data
+        console.log(response.data)
+        }
+        )
+      .catch(function(error) {
+        console.log(error);
+      });
+
+      
+    }
+  },
+  mounted () {
+    axios
+      .get('https://4803.dev.idg.com.au/trello/teams/')
+      .then(response => {
+        this.teams = response.data
+        console.log(response.data)
+        }
+        ) 
+      
+  }
+  })
+
+</script>
+
+{% endblock content %}

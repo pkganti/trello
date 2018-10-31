@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
@@ -41,14 +42,18 @@ class IsAuthorizedTeamMember(IsAuthenticated):
                 return False
         return super(IsAuthorizedTeamMember, self).has_permission(request, view)
 
+# To remove the csrf enforcement
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+
 class LoginView(View):
     def get(self, request):
-        # Code block for GET request
         c = {}
         return render(request, 'login.html', c)
 
     def post(self, request):
-        # Code block for POST request
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
@@ -67,15 +72,17 @@ class LoginView(View):
 
         return render(request, 'login.html')
 
+# The site home page
 class HomeView(View):
     def get(self, request):
         c = {}
         return render(request, 'user_home.html', c)
 
+# Logout page
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return render(request, 'login.html')
+        return redirect('login-home')
 
 class RegistrationView(View):
     def get(self, request):
@@ -122,6 +129,9 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     permission_classes = (IsAuthenticatedUser, IsAuthorizedTeamMember,)
+
+    # This below code is to exempt csrf token
+    authentication_classes = (CsrfExemptSessionAuthentication, )
 
 class BoardList(generics.ListCreateAPIView):
     queryset = Board.objects.all()

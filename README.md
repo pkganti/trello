@@ -43,8 +43,8 @@ We are assuming that you are running the application on default 8000 port
 
 # Technologies:
 
-Django 1.11.16
-Django Rest Framework
-BULMA Flexbox Framework for styling
-Vue.js
-Axios
+1. Django 1.11.16
+2. Django Rest Framework
+3. BULMA Flexbox Framework for styling
+4. Vue.js
+5. Axios
